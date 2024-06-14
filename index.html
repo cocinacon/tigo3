@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TV</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    #video-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    #video {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="video-container">
+    <video id="video" controls autoplay></video>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.7/shaka-player.compiled.min.js"></script>
+  <script>
+    (async () => {
+      try {
+        await shaka.polyfill.installAll();
+        if (!shaka.Player.isBrowserSupported()) {
+          throw new Error('Browser not supported');
+        }
+
+        const video = document.getElementById('video');
+        const player = new shaka.Player(video);
+
+        const drmConfig = {
+          clearKeys: {
+            'f62e93559765dfa6a89d2842b2b6d64a':'9f6a8cf0bcb1d17ce79ea93d0d9c3d83'
+          }
+        };
+
+        await player.configure({
+          drm: drmConfig
+        });
+
+        await player.load('https://sam-py-edge02.tigo.com.py/VMX4_widevine/rolling-buffer/TigoSports3HDPY/TigoSports3HDPY/transmux/index.mpd');
+
+        console.log('Video loaded successfully!');
+      } catch (error) {
+        console.error('Error loading video:', error);
+      }
+    })();
+  </script>
+</body>
+</html>
